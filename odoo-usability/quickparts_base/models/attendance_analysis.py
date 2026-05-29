@@ -192,7 +192,7 @@ class AttendanceAnalysis(models.Model):
         # Any change to the measured hours moves the gap (hence the
         # allocation): flag the records so the nightly cron re-syncs them.
         measured = {'hours_attendance', 'hours_leave', 'hours_public_holiday',
-                    'hours_theoretical'}
+                    'hours_theoretical', 'hours_additionnal'}
         if measured & set(vals) and 'allocation_to_sync' not in vals:
             super(AttendanceAnalysis, self).write({'allocation_to_sync': True})
         # Leaving manual mode hands the record back to automatic computation.
