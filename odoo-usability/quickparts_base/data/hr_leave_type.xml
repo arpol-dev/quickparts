@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Type de congé alimenté par les écarts de timbrage. Remplace
+             l'identifiant codé en dur (holiday_status_id=6). Sur une base
+             existante, la migration relie ce xmlid au type déjà utilisé. -->
+        <record id="leave_type_timbrage" model="hr.leave.type">
+            <field name="name">Allocation timbrage</field>
+        </record>
+
+    </data>
+</odoo>

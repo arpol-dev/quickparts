@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_attendance_analysis_user,attendance_analysis.user,model_attendance_analysis,hr.group_hr_user,1,0,0,0
+access_attendance_analysis_manager,attendance_analysis.manager,model_attendance_analysis,hr.group_hr_manager,1,1,1,1

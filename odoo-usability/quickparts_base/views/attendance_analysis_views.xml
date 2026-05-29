@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_attendance_analysis_tree" model="ir.ui.view">
+        <field name="name">attendance_analysis.tree</field>
+        <field name="model">attendance_analysis</field>
+        <field name="arch" type="xml">
+            <tree default_order="date desc" create="false">
+                <field name="allocation_to_sync" invisible="1"/>
+                <field name="date"/>
+                <field name="employee_id"/>
+                <field name="hours_theoretical" widget="float_time"
+                       sum="Total théorique"/>
+                <field name="hours_attendance" widget="float_time"
+                       sum="Total pointé"/>
+                <field name="hours_leave" widget="float_time"
+                       sum="Total congés" optional="show"/>
+                <field name="hours_public_holiday" widget="float_time"
+                       sum="Total férié chômé" optional="hide"/>
+                <field name="hours_additionnal" widget="float_time"
+                       sum="Total non pointé" optional="hide"/>
+                <field name="gap" widget="float_time" sum="Total écart"
+                       decoration-success="gap &gt; 0" decoration-danger="gap &lt; 0"
+                       decoration-muted="gap == 0"/>
+                <field name="manual_adjustment"/>
+                <field name="name" optional="hide"/>
+                <button name="action_sync_allocation" string="Ajuster l'allocation"
+                        type="object" class="btn btn-primary"
+                        help="Régénère l'allocation à partir de l'écart courant"
+                        groups="hr_attendance.group_hr_attendance_manager"
+                        attrs="{'invisible': [('allocation_to_sync', '=', False)]}"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_attendance_analysis_form" model="ir.ui.view">
+        <field name="name">attendance_analysis.form</field>
+        <field name="model">attendance_analysis</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <header>
+                    <button name="action_sync_allocation" string="Ajuster l'allocation"
+                            type="object" class="oe_highlight"
+                            help="Régénère l'allocation à partir de l'écart courant"
+                            groups="hr_attendance.group_hr_attendance_manager"
+                            attrs="{'invisible': [('allocation_to_sync', '=', False)]}"/>
+                </header>
+                <sheet>
+                    <field name="allocation_to_sync" readonly="1" invisible="1"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_attendances" type="object"
+                                class="oe_stat_button" icon="fa-clock-o">
+                            <field name="attendance_count" widget="statinfo"
+                                   string="Présences"/>
+                        </button>
+                        <button name="action_view_allocations" type="object"
+                                class="oe_stat_button" icon="fa-calendar">
+                            <field name="allocation_count" widget="statinfo"
+                                   string="Allocations"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="employee_id" class="oe_edit_only"/>
+                        <h1><field name="employee_id" readonly="1"/></h1>
+                        <h2>Journée du <field name="date" class="oe_inline"
+                                               readonly="1"/></h2>
+                    </div>
+                    <group>
+                        <group string="Attendu">
+                            <field name="hours_theoretical" widget="float_time" readonly="1"/>
+                        </group>
+                        <group string="Réalisé">
+                            <field name="manual_adjustment" string="Modifier manuellement"/>
+                            <field name="hours_attendance" widget="float_time"
+                                   attrs="{'readonly': [('manual_adjustment', '=', False)]}"/>
+                            <field name="hours_leave" widget="float_time"
+                                   attrs="{'readonly': [('manual_adjustment', '=', False)]}"/>
+                            <field name="hours_public_holiday" widget="float_time"
+                                   attrs="{'readonly': [('manual_adjustment', '=', False)]}"/>
+                            <field name="hours_additionnal" widget="float_time"/>
+                        </group>
+                    </group>
+                    <separator string="Résultat"/>
+                    <group>
+                        <group>
+                            <field name="gap" widget="float_time"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_attendance_analysis_search" model="ir.ui.view">
+        <field name="name">attendance_analysis.search</field>
+        <field name="model">attendance_analysis</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <field name="date"/>
+                <filter name="gap_nonzero" string="Écart non nul"
+                        domain="[('gap', '!=', 0)]"/>
+                <filter name="gap_negative" string="Sous l'horaire"
+                        domain="[('gap', '&lt;', 0)]"/>
+                <filter name="gap_positive" string="Heures supplémentaires"
+                        domain="[('gap', '&gt;', 0)]"/>
+                <separator/>
+                <filter name="to_sync" string="Allocation à synchroniser"
+                        domain="[('allocation_to_sync', '=', True)]"/>
+                <filter name="manual" string="Ajusté manuellement"
+                        domain="[('manual_adjustment', '=', True)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_employee" string="Employé"
+                            context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_date" string="Date"
+                            context="{'group_by': 'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_attendance_analysis" model="ir.actions.act_window">
+        <field name="name">Analyse des présences</field>
+        <field name="res_model">attendance_analysis</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_attendance_analysis_search"/>
+    </record>
+
+    <menuitem id="menu_attendance_analysis"
+              name="Analyse des présences"
+              parent="hr_attendance.menu_hr_attendance_manage_attendances"
+              action="action_attendance_analysis"
+              sequence="11"/>
+
+</odoo>

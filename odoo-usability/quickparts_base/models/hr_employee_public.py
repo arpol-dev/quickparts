@@ -1,6 +1,7 @@
-from odoo import api, fields, models, _
+from odoo import fields, models
 
-class hr_employee_public(models.Model):
+
+class HrEmployeePublic(models.Model):
     _inherit = 'hr.employee.public'
 
-    allow_attendee = fields.Boolean(string='Saisie sur présence')
+    allow_attendee = fields.Boolean(string="Saisie sur présence")

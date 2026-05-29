@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_employee_form_timbrage" model="ir.ui.view">
+        <field name="name">hr.employee.form.timbrage</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <!-- Replace the standard "Time Off" stat button (all leave types)
+                 with one scoped to paid leave, and add an overtime balance
+                 button next to it. -->
+            <xpath expr="//button[.//field[@name='allocation_used_display']]" position="replace">
+                <button name="action_view_paid_leave_analysis" type="object"
+                        class="oe_stat_button" icon="fa-calendar"
+                        attrs="{'invisible': [('show_leaves', '=', False)]}"
+                        groups="base.group_user"
+                        help="Congés payés pris / attribués">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="pto_used_display"/>/<field name="pto_allocated_display"/> Jours
+                        </span>
+                        <span class="o_stat_text">Congés payés</span>
+                    </div>
+                </button>
+                <button name="action_view_timbrage_analysis" type="object"
+                        class="oe_stat_button" icon="fa-clock-o"
+                        attrs="{'invisible': [('show_leaves', '=', False)]}"
+                        groups="base.group_user"
+                        help="Solde d'heures supplémentaires (timbrage)">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="timbrage_balance_display"/>
+                        </span>
+                        <span class="o_stat_text">Heures supp.</span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -2,30 +2,42 @@
 
 {
     'name': 'Quickparts Base',
-    'version': '14.0.1.0.3',
-    'category': '',
+    'version': '14.0.6.0.0',
+    'category': 'Human Resources/Attendances',
     'license': 'AGPL-3',
-    'summary': 'Usability improvements for quickparts',
+    'summary': "Analyse des présences et allocations automatiques de timbrage",
     'description': """
-Quickparts usability
-=================
+Quickparts Base
+===============
 
-This module provides several small usability improvements for percipio:
+Analyse quotidiennement les présences (timbrages) des employés concernés et
+les compare à leur horaire théorique issu du calendrier de travail. L'écart
+(« gap ») obtenu est converti en allocation de congés afin de créditer ou
+débiter les heures supplémentaires.
 
-* TODO: update this list
+Deux actions planifiées :
 
-This module has been written by Honoré Magnin-Feysot from ExNihiloSolution <https://github.com/hmagninfeysot>.
+* analyse quotidienne des présences (par employé / par jour) ;
+* création des allocations de congés à partir des écarts calculés.
     """,
-    'author': 'Honoré Magnin-Feysot',
-    'website': 'http://odoo.exnihilosolution.com',
+    'author': 'Quickparts',
     'depends': [
         'base',
-        'hr_holidays',
         'hr',
-        ],
+        'hr_attendance',
+        'hr_holidays',
+        'hr_holidays_public',
+    ],
     'data': [
-       # 'data/helpdesk_data.xml',
-       # 'views/quickupdate_quickanalyse_des_presences.xml',
-        ],
+        'security/ir.model.access.csv',
+        'data/hr_leave_type.xml',
+        'data/ir_cron.xml',
+        'views/attendance_analysis_views.xml',
+        'views/hr_employee_views.xml',
+        'views/hr_leave_allocation_views.xml',
+    ],
+    'qweb': [
+        'static/src/xml/time_off_dashboard.xml',
+    ],
     'installable': True,
 }

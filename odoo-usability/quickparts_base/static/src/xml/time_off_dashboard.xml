@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-extend="hr_holidays.dashboard_calendar_header">
+
+        <!-- Timbrage tile: show the remaining hours balance with a conditional
+             "à récupérer / à rattraper" label; keep the original rendering for
+             every other leave type. -->
+        <t t-jquery="div.mt-2" t-operation="replace">
+            <div class="mt-2">
+                <t t-if="timeoff[1]['is_timbrage']">
+                    <span t-esc="timeoff[1]['timbrage_abs']" class="o_timeoff_big o_timeoff_purple"/> Heures
+                    <t t-if="timeoff[1]['virtual_remaining_leaves'] &lt; 0"> à rattraper</t>
+                    <t t-else=""> à récupérer</t>
+                </t>
+                <t t-else="">
+                    <t t-if="need_allocation">
+                        <span t-esc="timeoff[1]['virtual_remaining_leaves']" class="o_timeoff_big o_timeoff_purple"/> / <span t-esc="timeoff[1]['max_leaves']"/> <t t-if="timeoff[1]['request_unit'] == 'hour'">Hours</t><t t-else="">Days</t>
+                    </t>
+                    <t t-else="">
+                        <span t-esc="timeoff[1]['virtual_leaves_taken']" class="o_timeoff_big o_timeoff_purple"/> <t t-if="timeoff[1]['request_unit'] == 'hour'">Hours</t><t t-else="">Days</t>
+                    </t>
+                </t>
+            </div>
+        </t>
+
+        <!-- Hide the "taken" line on the timbrage tile only. -->
+        <t t-jquery="span.mb-4" t-operation="attributes">
+            <attribute name="t-if">need_allocation &amp;&amp; !timeoff[1]['is_timbrage']</attribute>
+        </t>
+
+    </t>
+
+</templates>
